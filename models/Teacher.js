@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-
-mongoose.connect('mongodb://127.0.0.1:27017/staff');
+require('dotenv').config();
+const {USER, PASSWORD} = process.env;
+const database = `mongodb+srv://${USER}:${PASSWORD}@school-cluster.agwze2v.mongodb.net/?retryWrites=true&w=majority&appName=school-cluster`;
+mongoose.connect(database);
 
 const teacherSchema = new Schema({
     firstName: {
