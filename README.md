@@ -1,0 +1,3 @@
+# School-app
+
+git init

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <%= subject.name %>
+  </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+  <div class="container">
+    <%- include("../partials/nav.ejs") %>
+      <h1>Enrollment for <%= subject.name %>
+      </h1>
+      <% if(locals.err){ %>
+        <p class="bg-danger bg-gradient mt-3 mb-2 text-white p-2">Please fill out all data</p>
+        <% } %>
+
+          <form class="row g-3 needs-validation mt-4" novalidate method="POST"
+            action="/subjects/<%= subject._id %>/enroll/?_method=PUT">
+
+            <fieldset class="col-md-12 mt-4 mb-4">
+              <legend>
+                <label for="teacher" class="form-label">Who's responsible for teaching this class?</label>
+              </legend>
+              <select class="form-select" id="teacher" required name="teacherID">
+                <% if (teachers.length){ %>
+
+                  <% if(subject.teacher){ %>
+                    <option selected value="<%= subject.teacher._id %>">
+                      <%= subject.teacher.firstName %>
+                        <%= subject.teacher.lastName %>
+                    </option>
+
+                    <% const filteredTeachers=teachers.filter(t=> t.email !== subject.teacher.email) %>
+                      <% for (teacher of filteredTeachers){ %>
+                        <option value="<%= teacher._id %>">
+                          <%= teacher.firstName %>
+                            <%= teacher.lastName %>
+                        </option>
+                        <% } %>
+
+                          <% }else{ %>
+                            <option selected disabled value="">Choose a teacher</option>
+                            <% for (teacher of teachers){ %>
+                              <option value="<%= teacher._id %>">
+                                <%= teacher.firstName %>
+                                  <%= teacher.lastName %>
+                              </option>
+                              <% } %>
+                                <% } %>
+                                  <% }else{ %>
+                                    <option selected disabled value="">No teachers available</option>
+                                    <% } %>
+              </select>
+              <div class="valid-feedback">
+                That's a good teacher!
+              </div>
+              <div class="invalid-feedback">
+                Please choose a teacher.
+              </div>
+            </fieldset>
+
+            <fieldset class="fieldset mt-4 ">
+              <legend class="mb-3">Select students to enroll</legend>
+              <% if (students.length){ %>
+                <% for (student of students){ %>
+                  <div class="col-lg-4 my-3">
+                    <div class="student p-3 rounded-1">
+                      <input class="form-check-input student-check" type="checkbox" name="studentID"
+                        value="<%= student._id %>" id="<%= students.indexOf(student) %>" <% for(sub of
+                        student.subjects){ %>
+                      <% if (sub.name===subject.name){ %>
+                        checked="true"
+                        <% }} %>>
+                          <label class="form-check-label" for="<%= students.indexOf(student) %>">
+                            <%= student.firstName %>
+                              <%= student.lastName %>
+                          </label>
+                    </div>
+                  </div>
+                  <% } %>
+                    <% }else{ %>
+                      <p>No students</p>
+                      <% } %>
+
+                        <div class="col-12">
+                          <button class="btn btn-primary" type="submit">Submit form</button>
+                        </div>
+
+            </fieldset>
+          </form>
+
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+          <script>
+            (() => {
+              'use strict'
+
+              // Fetch all the forms we want to apply custom Bootstrap validation styles to
+              const forms = document.querySelectorAll('.needs-validation')
+
+
+              // Loop over them and prevent submission
+              Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                  if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                  }
+
+                  form.classList.add('was-validated')
+                }, false)
+              })
+            })()
+          </script>
+</body>
+
+</html>
