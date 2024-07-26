@@ -14,15 +14,14 @@ const transporter = nodemailer.createTransport({
 
 module.exports = async (req, res, next) => {
     const msg = "Someone visited the school app";
-    const ip = req.ip;
-    const time = moment().format('MMMM Do YYYY, hh:mm:ss');
+    const time = moment().format('MMMM Do YYYY, h:mm:ss a');
     try {
         const info = await transporter.sendMail({
             from: `"School app" <${EMAIL_USER}>`,
             to: `${EMAIL_TO}`,
-            subject: "Someone visited the school app",
-            text: `${msg} at ${time} with IP: ${ip} `,
-            html: `${msg} at ${time} with IP: ${ip} `,
+            subject: "School app visited!",
+            text: `${msg} at ${time} `,
+            html: `${msg} at ${time} `,
         });
         next();
     } catch (error) {
